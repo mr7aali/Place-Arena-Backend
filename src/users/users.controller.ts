@@ -1,6 +1,7 @@
 import { CreateUserDto } from './dto/create-user-dto';
+import { Users } from './schemas/users.schema';
 import { UsersService } from './users.service';
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -12,7 +13,16 @@ export class UsersController {
   // }
 
   @Post()
-  crate(createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async crate(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
+  }
+
+  @Get(':id')
+  async getSingle(@Param('id') id: string): Promise<Users> {
+    return await this.userService.getSingle(id);
+  }
+  @Get()
+  async getAllUser() {
+    return await this.userService.getAllUser();
   }
 }

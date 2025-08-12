@@ -11,7 +11,7 @@ export class Users {
   email: string;
   @Prop({ required: true, enum: ['admin', 'owner', 'tenant'] })
   role: string;
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
   @Prop({ required: true })
   phoneNumber: string;

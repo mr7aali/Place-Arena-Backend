@@ -6,7 +6,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import { use } from 'passport';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
 
 @Injectable()
@@ -26,7 +25,6 @@ export class AuthService {
       ...userDto,
       password: hashedPassword,
     });
-    // const { password, ...result } = user.toObject();
     return user;
   }
 
@@ -36,7 +34,6 @@ export class AuthService {
   ): Promise<{ email: string; role: string; userId: string }> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      // const { password, ...result } = user;
       return {
         email: user.email,
         role: user.role,

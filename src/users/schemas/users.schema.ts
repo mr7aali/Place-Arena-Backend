@@ -7,7 +7,7 @@ export class Users {
   _id: string;
   @Prop({ required: false })
   fullName: string;
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
   @Prop({ required: true, enum: ['admin', 'owner', 'tenant'] })
   role: string;

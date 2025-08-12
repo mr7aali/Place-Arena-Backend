@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { use } from 'passport';
+import { CreateUserDto } from 'src/users/dto/create-user-dto';
 
 @Injectable()
 export class AuthService {
@@ -15,19 +16,19 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  // async register(userDto: any) {
-  //   const existingUser = await this.usersService.getSingle(userDto.));
-  //   if (existingUser) {
-  //     throw new ConflictException('Email already exists');
-  //   }
-  //   const hashedPassword = await bcrypt.hash(userDto.password, 10);
-  //   const user = await this.usersService.create({
-  //     ...userDto,
-  //     password: hashedPassword,
-  //   });
-  //   const { password, ...result } = user.toObject();
-  //   return result;
-  // }
+  async register(userDto: CreateUserDto) {
+    const existingUser = await this.usersService.getByEmail(userDto.email);
+    if (existingUser) {
+      throw new ConflictException('Email already exists');
+    }
+    const hashedPassword = await bcrypt.hash(userDto.password, 10);
+    const user = await this.usersService.create({
+      ...userDto,
+      password: hashedPassword,
+    });
+    // const { password, ...result } = user.toObject();
+    return user;
+  }
 
   async validateUser(
     email: string,

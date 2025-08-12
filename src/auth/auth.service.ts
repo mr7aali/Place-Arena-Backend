@@ -33,6 +33,7 @@ export class AuthService {
     password: string,
   ): Promise<{ email: string; role: string; userId: string }> {
     const user = await this.usersService.findByEmail(email);
+
     if (user && (await bcrypt.compare(password, user.password))) {
       return {
         email: user.email,
@@ -43,10 +44,22 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials. Please Try again.');
   }
 
-  async login(user: { email: string; role: string; userId: string }) {
+  async login(user: {
+    email: string;
+    role: string;
+    userId: string;
+  }): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { email: user.email, sub: user.userId, role: user.role };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+    };
+  }
+
+  async refreshTokens(userId: string, email: string, role: string) {
+    const payload = { sub: userId, email, role };
+    return {
+      accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),
     };
   }
 }

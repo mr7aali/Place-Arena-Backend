@@ -32,11 +32,24 @@ export class UsersService {
   async getByEmail(email: string) {
     return await this.usersModel.findOne({ email: email });
   }
+  async findByEmailAndPassword({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) {
+    return await this.usersModel
+      .findOne({ email: email, password: password })
+      .select('+password');
+  }
   async getAllUser(): Promise<Users[]> {
     return await this.usersModel.find({});
   }
   async findByEmail(email: string): Promise<Users> {
-    const result = await this.usersModel.findOne({ email: email });
+    const result = await this.usersModel
+      .findOne({ email: email })
+      .select('+password');
     if (!result) {
       throw new ConflictException('User with this email already exists.');
     }

@@ -13,10 +13,14 @@ import { LoginUserDto } from './dto/login-user-dto';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { JwtAuthGuard } from './jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
   @Post('login')
   async login(
     @Body() loginDto: LoginUserDto,
@@ -33,7 +37,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       sameSite: 'strict',
     });
-    return { accessToken: result.accessToken };
+    return { accessToken: result.accessToken, test: process.env.NODE_ENV };
   }
   @Post('register')
   async register(
@@ -48,8 +52,8 @@ export class AuthController {
     });
     res.cookie('refresh_token', result.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // only use secure in prod
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'strict',
     });
     return { accessToken: result.accessToken };

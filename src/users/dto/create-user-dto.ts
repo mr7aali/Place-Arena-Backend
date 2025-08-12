@@ -1,8 +1,8 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
-  name: string;
+  fullName: string;
 
   @IsEmail()
   @IsString()
@@ -11,6 +11,9 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
-  @IsEnum(['user', 'admin'])
+  @IsEnum(['owner', 'tenant', 'admin'])
   role: string;
+
+  @IsPhoneNumber()
+  phoneNumber: string;
 }

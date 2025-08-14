@@ -31,6 +31,7 @@ export class AuthController {
       loginDto.password,
     );
     const result = await this.authService.login(user);
+
     res.cookie('refresh_token', result.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // only use secure in prod

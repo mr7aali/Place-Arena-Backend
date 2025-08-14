@@ -12,17 +12,15 @@ export class RefreshTokenStrategy extends PassportStrategy(
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) =>
-          req?.cookies?.refresh_token || req?.body?.refresh_token,
+        (req: Request) => req?.cookies?.refresh_token,
       ]),
-      secretOrKey: process.env.JWT_SECRET as string,
+      secretOrKey: process.env.JWT_REFRESH_SECRET as string,
       passReqToCallback: true,
     });
   }
 
   validate(req: Request, payload: any) {
-    const refreshToken =
-      req?.cookies?.refresh_token || req?.body?.refresh_token;
+    const refreshToken = req?.cookies?.refresh_token;
     return { ...payload, refreshToken };
   }
 }

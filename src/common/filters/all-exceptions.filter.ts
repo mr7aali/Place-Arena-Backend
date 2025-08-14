@@ -3,7 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  BadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -20,7 +19,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      // Handle validation errors from class-validator
       if (statusCode === 400 && typeof exceptionResponse === 'object') {
         const { message: validationMessages, error } =
           exceptionResponse as Record<string, any>;
@@ -30,13 +28,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     } else if (exception instanceof Error) {
       message = exception.message;
-      console.log(exception);
     }
     response.status(statusCode).json({
       success: false,
       statusCode,
       message,
-      exception: exception,
+      // exception: exception,
     });
   }
 }

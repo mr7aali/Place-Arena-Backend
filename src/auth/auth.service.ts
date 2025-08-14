@@ -51,15 +51,25 @@ export class AuthService {
   }): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { email: user.email, sub: user.userId, role: user.role };
     return {
-      accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '15m',
+        secret: process.env.JWT_ACCESS_SECRET,
+      }),
+
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: '7d',
+        secret: process.env.JWT_REFRESH_SECRET,
+      }),
     };
   }
 
   async refreshTokens(userId: string, email: string, role: string) {
     const payload = { sub: userId, email, role };
     return {
-      accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '15m',
+        secret: process.env.JWT_ACCESS_SECRET,
+      }),
     };
   }
 }

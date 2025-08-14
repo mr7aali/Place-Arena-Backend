@@ -12,13 +12,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET'),
-      }),
-    }),
+    // JwtModule.registerAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (config: ConfigService) => ({
+    //     secret: config.get<string>('JWT_SECRET'),
+    //   }),
+    // }),
+    JwtModule.register({}),
   ],
   providers: [AuthService, JwtStrategy, RefreshTokenStrategy, ConfigService],
   controllers: [AuthController],

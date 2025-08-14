@@ -2,6 +2,7 @@ import { AuthService } from './auth.service';
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Request,
@@ -38,7 +39,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       sameSite: 'strict',
     });
-    return { accessToken: result.accessToken, test: process.env.NODE_ENV };
+    return { accessToken: result.accessToken };
   }
   @Post('register')
   async register(
@@ -76,8 +77,13 @@ export class AuthController {
     );
   }
   @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  logout() {
-    return { message: 'Logout successful (tokens removed on client side)' };
+  @Get('logout')
+  logout(@Req() req, @Res({ passthrough: true }) res: Response) {
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+    return { message: 'Logged out successfully' };
   }
 }

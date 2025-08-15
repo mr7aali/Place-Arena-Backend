@@ -33,7 +33,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       success: false,
       statusCode,
       message,
-      // exception: exception,
+      exception: exception,
     });
   }
 }

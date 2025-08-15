@@ -64,11 +64,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('profile')
   getProfile(@Request() req) {
+    console.log(req.user);
     return req.user;
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))
-  @Post('refresh')
+  @Get('refresh')
   async refresh(@Req() req) {
     return await this.authService.refreshTokens(
       req.user.sub,

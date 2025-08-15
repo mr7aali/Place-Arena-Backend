@@ -13,7 +13,12 @@ async function bootstrap() {
   //   credentials: true,
   // });
   app.enableCors({
-    origin: ['http://localhost:3000', process.env.FRONTEND_URL],
+    origin: [
+      'http://localhost:3000',
+      process.env.FRONTEND_URL,
+      'https://place-arena.vercel.app',
+      'https://place-arena.vercel.app/',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

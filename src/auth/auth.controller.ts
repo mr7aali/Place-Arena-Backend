@@ -7,6 +7,7 @@ import {
   Req,
   Request,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
@@ -33,13 +34,23 @@ export class AuthController {
     );
     const result = await this.authService.login(user);
 
-    res.cookie('refresh_token', result.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // only use secure in prod
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      sameSite: 'strict',
-    });
-    return { accessToken: result.accessToken };
+    // res.cookie('refresh_token', result.refreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production', // only use secure in prod
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    //   sameSite: 'strict',
+    // });
+    // res.cookie('refresh_token', result.refreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    //   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Key change
+    //   path: '/',
+    // });
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    };
   }
   @Post('register')
   async register(
@@ -54,7 +65,8 @@ export class AuthController {
     });
     res.cookie('refresh_token', result.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      // secure: process.env.NODE_ENV === 'production',
+      secure: this.configService.get<string>('NODE_ENV') === 'production',
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: 'strict',
     });
@@ -62,20 +74,30 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
+  @Get('profile')
   getProfile(@Request() req) {
     console.log(req.user);
-    return req.user;
+    return {
+      success: true,
+      message: 'User profile fetched successfully',
+      data: req.user,
+    };
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))
-  @Get('refresh')
+  @Post('refresh')
   async refresh(@Req() req) {
-    return await this.authService.refreshTokens(
-      req.user.sub,
-      req.user.email,
-      req.user.role,
-    );
+    try {
+      console.log('called');
+      return await this.authService.refreshTokens(
+        req.user.sub,
+        req.user.email,
+        req.user.role,
+      );
+    } catch (error) {
+      console.error('Error during token refresh:', error);
+      throw new UnauthorizedException('Failed to refresh tokens');
+    }
   }
   @UseGuards(JwtAuthGuard)
   @Get('logout')

@@ -55,13 +55,11 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload, {
         expiresIn: '30s',
-        // secret: process.env.JWT_ACCESS_SECRET,
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
       }),
 
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '120s',
-        // secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '7d',
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       }),
     };
@@ -71,7 +69,7 @@ export class AuthService {
     const payload = { sub: userId, email, role };
     return {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '15m',
+        expiresIn: '30s',
         secret: process.env.JWT_ACCESS_SECRET,
       }),
     };

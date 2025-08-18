@@ -76,7 +76,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    console.log(req.user);
     return {
       success: true,
       message: 'User profile fetched successfully',
@@ -88,7 +87,6 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Req() req) {
     try {
-      console.log('called');
       return await this.authService.refreshTokens(
         req.user.sub,
         req.user.email,

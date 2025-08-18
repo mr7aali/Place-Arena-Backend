@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type PropertyDocument = Property & Document;
 
@@ -7,7 +7,8 @@ export type PropertyDocument = Property & Document;
 export class Property {
   @Prop({ required: true })
   title: string;
-
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true })
+  ownerId: string;
   @Prop({ required: true })
   location: string;
 
@@ -31,15 +32,6 @@ export class Property {
 
   @Prop({ type: [String], required: true })
   features: string[];
-
-  @Prop({ required: true })
-  ownerName: string;
-
-  @Prop({ required: true })
-  ownerPhone: string;
-
-  @Prop({ required: true })
-  ownerEmail: string;
 
   @Prop({ type: [String], required: true })
   images: string[];

@@ -8,6 +8,7 @@ export class PropertyController {
 
   @Post()
   async crate(@Body() createPropertyDto: CreatePropertyDto) {
+    console.log(createPropertyDto);
     return await this.propertyService.create(createPropertyDto);
   }
   @Get()
@@ -17,5 +18,9 @@ export class PropertyController {
   @Get(':id')
   async getSingle(@Param('id') id: string) {
     return await this.propertyService.getSingle(id);
+  }
+  @Get('owner/:ownerId')
+  async getByOwnerId(@Param('ownerId') ownerId: string) {
+    return await this.propertyService.getByOwnerId(ownerId);
   }
 }

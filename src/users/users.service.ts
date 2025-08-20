@@ -55,4 +55,26 @@ export class UsersService {
     }
     return result;
   }
+  async deleteUser(id: string): Promise<{ message: string }> {
+    const result = await this.usersModel.findByIdAndDelete(id);
+
+    if (!result) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return { message: 'User deleted successfully' };
+  }
+  async updateUser(id: string, updateData: Partial<Users>): Promise<Users> {
+    const updatedUser = await this.usersModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }, // return updated doc, validate schema
+    );
+
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return updatedUser;
+  }
 }

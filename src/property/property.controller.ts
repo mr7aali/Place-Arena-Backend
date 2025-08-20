@@ -24,6 +24,10 @@ export class PropertyController {
   async getAll() {
     return await this.propertyService.getAll();
   }
+  @Get('approve')
+  async getAllApproved() {
+    return await this.propertyService.getAllApproved();
+  }
   @Get('owner/:ownerId')
   async getByOwnerId(@Param('ownerId') ownerId: string) {
     return await this.propertyService.getByOwnerId(ownerId);

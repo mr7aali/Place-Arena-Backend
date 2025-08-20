@@ -16,7 +16,9 @@ export class PropertyService {
     return { success: true, data: result };
   }
   async getAll() {
-    // return await this.propertyModel.find({});
+    return await this.propertyModel.find({});
+  }
+  async getAllApproved() {
     return await this.propertyModel.find({ status: 'approve' });
   }
   async getSingle(id: string) {

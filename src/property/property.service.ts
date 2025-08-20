@@ -30,4 +30,17 @@ export class PropertyService {
   async getByOwnerId(ownerId: string) {
     return await this.propertyModel.find({ ownerId });
   }
+  async getAllProductByIds(ids: string[]) {
+    try {
+      const properties = await this.propertyModel.find({ _id: { $in: ids } });
+
+      if (!properties || properties.length === 0) {
+        throw new NotFoundException('No properties found for the given IDs');
+      }
+
+      return { success: true, data: properties };
+    } catch (error) {
+      throw new NotFoundException('Error fetching properties by IDs');
+    }
+  }
 }

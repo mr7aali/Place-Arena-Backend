@@ -1,6 +1,13 @@
 import { CreatePropertyDto } from './dto/create-property-dto';
 import { PropertyService } from './property.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+} from '@nestjs/common';
 
 @Controller('property')
 export class PropertyController {
@@ -22,5 +29,13 @@ export class PropertyController {
   @Get('owner/:ownerId')
   async getByOwnerId(@Param('ownerId') ownerId: string) {
     return await this.propertyService.getByOwnerId(ownerId);
+  }
+  @Post('by-ids')
+  async getPropertiesByIds(@Body('ids') ids: string[]) {
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new BadRequestException('Ids array is required in request body');
+    }
+
+    return this.propertyService.getAllProductByIds(ids);
   }
 }

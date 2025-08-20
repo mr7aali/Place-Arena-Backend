@@ -35,6 +35,13 @@ export class Property {
 
   @Prop({ type: [String], required: true })
   images: string[];
+
+  @Prop({
+    required: false,
+    enum: ['approve', 'reject', 'pending'],
+    default: 'pending',
+  })
+  status?: string;
 }
 
 export const PropertySchema = SchemaFactory.createForClass(Property);

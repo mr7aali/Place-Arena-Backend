@@ -7,7 +7,9 @@ import {
   Get,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
+import { Property } from './schemas/property.schema';
 
 @Controller('property')
 export class PropertyController {
@@ -22,10 +24,6 @@ export class PropertyController {
   async getAll() {
     return await this.propertyService.getAll();
   }
-  @Get(':id')
-  async getSingle(@Param('id') id: string) {
-    return await this.propertyService.getSingle(id);
-  }
   @Get('owner/:ownerId')
   async getByOwnerId(@Param('ownerId') ownerId: string) {
     return await this.propertyService.getByOwnerId(ownerId);
@@ -37,5 +35,20 @@ export class PropertyController {
     }
 
     return this.propertyService.getAllProductByIds(ids);
+  }
+  @Get('not-approved')
+  async getUsersNotApproved(): Promise<Property[]> {
+    return this.propertyService.getPropertiesNotApproved();
+  }
+  @Get(':id')
+  async getSingle(@Param('id') id: string) {
+    return await this.propertyService.getSingle(id);
+  }
+  @Put(':id')
+  async updateProperty(
+    @Param('id') id: string,
+    @Body() updatedData: Partial<Property>,
+  ): Promise<Property> {
+    return this.propertyService.updateProperty(id, updatedData);
   }
 }

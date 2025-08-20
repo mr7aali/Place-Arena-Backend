@@ -16,7 +16,8 @@ export class PropertyService {
     return { success: true, data: result };
   }
   async getAll() {
-    return await this.propertyModel.find({});
+    // return await this.propertyModel.find({});
+    return await this.propertyModel.find({ status: 'approve' });
   }
   async getSingle(id: string) {
     const result = await this.propertyModel
@@ -42,5 +43,28 @@ export class PropertyService {
     } catch (error) {
       throw new NotFoundException('Error fetching properties by IDs');
     }
+  }
+  async getPropertiesNotApproved(): Promise<Property[]> {
+    return this.propertyModel
+      .find({
+        $or: [{ status: { $exists: false } }, { status: { $ne: 'approve' } }],
+      })
+      .exec();
+  }
+  async updateProperty(
+    id: string,
+    updatedData: Partial<Property>,
+  ): Promise<Property> {
+    const updatedProperty = await this.propertyModel.findByIdAndUpdate(
+      id,
+      { $set: updatedData },
+      { new: true },
+    );
+
+    if (!updatedProperty) {
+      throw new NotFoundException(`Property with ID ${id} not found`);
+    }
+
+    return updatedProperty;
   }
 }

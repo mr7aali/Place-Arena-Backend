@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -54,5 +55,9 @@ export class PropertyController {
     @Body() updatedData: Partial<Property>,
   ): Promise<Property> {
     return this.propertyService.updateProperty(id, updatedData);
+  }
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string) {
+    return this.propertyService.deleteProperty(id);
   }
 }

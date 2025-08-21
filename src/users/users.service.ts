@@ -51,7 +51,7 @@ export class UsersService {
       .findOne({ email: email })
       .select('+password');
     if (!result) {
-      throw new ConflictException('User with this email already exists.');
+      throw new ConflictException('User not found.');
     }
     return result;
   }
@@ -61,7 +61,6 @@ export class UsersService {
     if (!result) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-
     return { message: 'User deleted successfully' };
   }
   async updateUser(id: string, updateData: Partial<Users>): Promise<Users> {

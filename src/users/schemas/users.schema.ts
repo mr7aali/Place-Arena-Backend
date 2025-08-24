@@ -15,6 +15,12 @@ export class Users {
   password: string;
   @Prop({ required: true })
   phoneNumber: string;
+
+  @Prop({ type: { code: String, expires: Number } })
+  otp?: { code: string; expires: number };
+
+  @Prop({ required: false, type: Boolean })
+  verified?: boolean;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

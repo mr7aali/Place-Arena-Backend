@@ -17,3 +17,18 @@ export class CreateUserDto {
   @IsPhoneNumber()
   phoneNumber: string;
 }
+
+export class OtpDto {
+  @IsString()
+  id: string;
+  @IsString()
+  phone: string;
+}
+
+export class VerifyOtpDto {
+  @IsString()
+  id: string;
+
+  @IsString()
+  code: string;
+}

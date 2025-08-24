@@ -44,4 +44,18 @@ export class UsersController {
   ): Promise<Users> {
     return this.userService.updateUser(id, updateData);
   }
+  @Post('otp')
+  async sendOtp(@Body() body: { phone: string; id: string }) {
+    return this.userService.sendOtp({ phone: body.phone, id: body.id });
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: { id: string; code: string }) {
+    const verified = await this.userService.verifyOtp({
+      id: body.id,
+      code: body.code,
+    });
+
+    return { verified };
+  }
 }

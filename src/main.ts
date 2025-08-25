@@ -12,6 +12,7 @@ async function bootstrap() {
       process.env.FRONTEND_URL,
       'https://place-arena.vercel.app',
       'https://place-arena.vercel.app/',
+      'https://www.placearena.com',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

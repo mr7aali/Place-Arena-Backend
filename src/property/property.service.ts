@@ -76,4 +76,15 @@ export class PropertyService {
     }
     return { message: 'Property deleted successfully' };
   }
+
+  async deleteAllPropertyOfUser({ id, session }: { id: string; session: any }) {
+    const result = await this.propertyModel.deleteMany(
+      { ownerId: id },
+      session ? { session } : {},
+    );
+    if (!result.acknowledged) {
+      throw new NotFoundException(`Property with ID ${id} not found`);
+    }
+    return true;
+  }
 }

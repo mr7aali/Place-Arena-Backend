@@ -1,4 +1,10 @@
-import { IsEmail, IsEnum, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -16,6 +22,10 @@ export class CreateUserDto {
 
   @IsPhoneNumber()
   phoneNumber: string;
+
+  @IsOptional() // 👈 allows this field to be missing
+  @IsString()
+  profileImage?: string;
 }
 export class OtpDto {
   @IsString()

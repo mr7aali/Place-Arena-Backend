@@ -8,12 +8,14 @@ import { Users, UsersDocument } from './schemas/users.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto, OtpDto, VerifyOtpDto } from './dto/create-user-dto';
 import { ConfigService } from '@nestjs/config';
+import { PropertyService } from 'src/property/property.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
     private config: ConfigService,
+    private readonly propertyService: PropertyService,
   ) {}
 
   async create(user: CreateUserDto): Promise<Users> {
@@ -57,13 +59,47 @@ export class UsersService {
     }
     return result;
   }
-  async deleteUser(id: string): Promise<{ message: string }> {
-    const result = await this.usersModel.findByIdAndDelete(id);
+  // async deleteUser(id: string): Promise<{ message: string }> {
+  //   const resultUserDelete = await this.usersModel.findByIdAndDelete(id);
+  //   const resultPropertyDelete =
+  //     await this.propertyService.deleteAllPropertyOfUser(id);
 
-    if (!result) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+  //   if (!resultPropertyDelete) {
+  //     throw new NotFoundException(`User with ID ${id} not found`);
+  //   }
+  //   return { message: 'User deleted successfully' };
+  // }
+  async deleteUser(id: string): Promise<{ message: string }> {
+    const session = await this.usersModel.db.startSession();
+    session.startTransaction();
+    try {
+      // Delete the user
+      const resultUserDelete = await this.usersModel.findByIdAndDelete(id, {
+        session,
+      });
+      if (!resultUserDelete) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      // Delete all properties owned by the user
+      const resultPropertyDelete =
+        await this.propertyService.deleteAllPropertyOfUser({
+          id: id,
+          session: session,
+        });
+
+      // Commit transaction if both succeed
+      await session.commitTransaction();
+      return {
+        message: `User and  properties deleted successfully`,
+      };
+    } catch (error) {
+      // Rollback transaction if something fails
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
     }
-    return { message: 'User deleted successfully' };
   }
   async updateUser(id: string, updateData: Partial<Users>): Promise<Users> {
     const updatedUser = await this.usersModel.findByIdAndUpdate(

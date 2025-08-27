@@ -15,11 +15,6 @@ import {
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  // @Get()
-  // getUsers(): Promise<string> {
-  //   return this.userService.getUsers();
-  // }
-
   @Post()
   async crate(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);

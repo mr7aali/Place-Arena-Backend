@@ -21,6 +21,9 @@ export class Users {
 
   @Prop({ required: false, type: Boolean })
   verified?: boolean;
+
+  @Prop({ required: false })
+  profileImage?: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

@@ -74,4 +74,47 @@ export class AuthService {
       }),
     };
   }
+  async signWithGooglePopup(userDto: CreateUserDto) {
+    const existingUser = await this.usersService.getByEmail(userDto.email);
+    if (existingUser) {
+      const payload = {
+        email: existingUser.email,
+        sub: existingUser._id,
+        role: existingUser.role,
+      };
+      return {
+        accessToken: this.jwtService.sign(payload, {
+          expiresIn: '120d',
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        }),
+
+        refreshToken: this.jwtService.sign(payload, {
+          expiresIn: '300d',
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        }),
+      };
+    }
+    const hashedPassword = await bcrypt.hash(userDto.password, 10);
+    const user = await this.usersService.create({
+      ...userDto,
+      password: hashedPassword,
+    });
+    const payload = {
+      email: user.email,
+      sub: user._id,
+      role: user.role,
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '120d',
+        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      }),
+
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: '300d',
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      }),
+    };
+  }
 }

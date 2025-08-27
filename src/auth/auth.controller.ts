@@ -33,25 +33,23 @@ export class AuthController {
       loginDto.password,
     );
     const result = await this.authService.login(user);
-
-    // res.cookie('refresh_token', result.refreshToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production', // only use secure in prod
-    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    //   sameSite: 'strict',
-    // });
-    // res.cookie('refresh_token', result.refreshToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    //   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Key change
-    //   path: '/',
-    // });
     return {
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
     };
   }
+  @Post('signup-with-google')
+  async signWithGooglePopup(
+    @Body() user: CreateUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.signWithGooglePopup(user);
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    };
+  }
+
   @Post('register')
   async register(
     @Body() userDto: CreateUserDto,

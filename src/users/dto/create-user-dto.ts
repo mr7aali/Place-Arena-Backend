@@ -17,7 +17,6 @@ export class CreateUserDto {
   @IsPhoneNumber()
   phoneNumber: string;
 }
-
 export class OtpDto {
   @IsString()
   id: string;
